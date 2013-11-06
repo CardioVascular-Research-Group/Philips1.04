@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE project>
+
+<project name="Philips1.04" basedir="." default="generateJarFiles">
+	
+	<property name="liferay" value="/opt/liferay" />
+	
+	<property name="portlet-ext" value="${liferay}/portlet-ext"/>
+	<property file="${liferay}/liferay-plugins-sdk-6.1.1/build.${user.name}.properties" />
+	<property name="dependencies" value="${liferay}/projects-dependencies" />
+	
+	<target name="clean">
+		<echo>Clean the temporary area</echo>
+		<delete dir="build"/>
+	</target>
+	
+	<target name="generateJarFiles" depends="clean">
+		
+		<echo>Create the temporary area</echo>
+		<mkdir dir="build"/>
+		<mkdir dir="build/class"/>
+		<mkdir dir="build/dist"/>
+		
+		<javac target="1.5" srcdir="src" destdir="build/class" />
+		
+		<jar destfile="build/dist/philips1.04.jar" basedir="build/class">
+			<include name="**/**"/>
+		</jar>
+		
+		<mkdir dir="${dependencies}/ECG_Converter4-dependencies"/>
+		<mkdir dir="${dependencies}/cvrg-broker-service-dependencies"/>
+		
+		<copy todir="${dependencies}/ECG_Converter4-dependencies" file="build/dist/philips1.04.jar" />
+		<copy todir="${dependencies}/cvrg-broker-service-dependencies" file="build/dist/philips1.04.jar" />
+	</target>
+	
+</project>
