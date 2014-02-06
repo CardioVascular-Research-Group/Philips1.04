@@ -72,6 +72,7 @@ public class DecodedLead {
 				if (++index == leads.length)
 					break;
 			}
+			reconstituteLeads(leads);
 			return leads;
 			
 		} else {
