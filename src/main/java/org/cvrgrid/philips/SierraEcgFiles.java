@@ -22,9 +22,21 @@ public final class SierraEcgFiles {
 	private SierraEcgFiles() {
 	}
 	
+	private static PreprocessReturn preprocessNew(JAXBContext context, InputStream inputStream) throws JAXBException, IOException {
+		Unmarshaller reader = context.createUnmarshaller();
+		Restingecgdata restingecgdata = (Restingecgdata)reader.unmarshal(inputStream);
+		
+		return preprocessNewComplete(restingecgdata);
+	}
+	
 	private static PreprocessReturn preprocessNew(JAXBContext context, File input) throws JAXBException, IOException {
 		Unmarshaller reader = context.createUnmarshaller();
 		Restingecgdata restingecgdata = (Restingecgdata)reader.unmarshal(input);
+
+		return preprocessNewComplete(restingecgdata);
+	}
+	
+	private static PreprocessReturn preprocessNewComplete(Restingecgdata restingecgdata) throws JAXBException, IOException{
 		DecodedLead[] leads = extractLeads(restingecgdata);
 		
 		StringBuffer buffer = new StringBuffer();
@@ -72,6 +84,12 @@ public final class SierraEcgFiles {
         parsedwaveforms.setValue(buffer.toString());
         
         return restingecgdata;
+	}
+	
+	public static PreprocessReturn preprocess(InputStream inputStream) throws IOException, JAXBException {
+		JAXBContext context = JAXBContext.newInstance("org.cvrgrid.philips.jaxb.beans");
+		
+		return preprocessNew(context, inputStream);
 	}
 	
 	public static PreprocessReturn preprocess(File input) throws IOException, JAXBException {
