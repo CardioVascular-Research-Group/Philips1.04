@@ -17,6 +17,8 @@ limitations under the License.
 /**
 * @author Chris Jurado
 */
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -56,4 +58,33 @@ public class AppTest extends TestCase{
 
 		assertTrue(leadData != null && leadData.length > 0);
     }
+    
+    @Test
+    public void testPreprocess(){
+    	String[] args = {INPUT_FILE_PATH};
+    	assertTrue(preprocessTest(args));
+    }
+    
+    
+	private boolean preprocessTest(String[] args) {
+		for (String arg : args) {
+			File input = new File(arg);
+			try {
+				SierraEcgFiles.preprocess(input, new File(input.getCanonicalPath() + ".decoded.xml"));
+			} catch (FileNotFoundException e) {
+				System.out.println("No such file: " + input);
+				e.printStackTrace();
+				return false;
+			} catch (IOException e) {
+				System.out.println("Error reading file: " + input);
+				e.printStackTrace();
+				return false;
+			} catch (JAXBException e) {
+				System.out.println("Error reading/writing XML: " + input);
+				e.printStackTrace();
+				return false;
+			}
+		}
+		return true;
+	}
 }
